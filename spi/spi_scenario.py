@@ -78,7 +78,7 @@ data = data.loc[data['관측일'] >= '2020-01-01',]
 data_obs = data.loc[data['관측일'] < '2020-10-01',]
 data_sce = data.loc[data['관측일'] >= '2020-10-01',]
 
-
+norm.ppf(gamma.cdf(15+0.00001, a_hat, b_hat))
 #%% SPI VISUALIZATION
 plt.plot(data_obs['관측일'],data_obs['SPI1'], color='#1f77b4', label='SPI1')
 plt.plot(data_obs['관측일'],data_obs['SPI2'], color='#ff7f0e', label='SPI2')
