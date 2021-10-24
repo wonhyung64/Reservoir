@@ -1,16 +1,26 @@
 # 라이블러리 불러오기
 library(readxl)
 library(PerformanceAnalytics)
-
+library(readxl)
+library(stringr)
 
 # 데이터 불러오기
 setwd("E:/Data/무수저수지")
 
-data = read.csv("진천_강수량_1999-2020.csv")
-data = data[1:7677,1:2]
-data$관측일 = as.Date(data$관측일)
-data$금년일강수량 = as.integer(data$금년일강수량)
+data = read_excel("진천_강수량_1999-2020.xls")
+data = data[1:7676,1:2]
+data$관측일 = as.character(data$관측일)
+data$금년일강수량 = as.numeric(data$금년일강수량)
 
+# 평년 시나리오
+data_obs = subset(data, 관측일 < '2020-10-01')
+data_sce = subset(data, 관측일 >= '2020-10-01')
+for (i in c(1:length(data_sce$관측일))){
+  tmp = grep(substr(data_sce[i,1], 5, 10), data_obs$관측일)
+  tmp2 = sum(data_obs[tmp, 2]) / length(tmp)
+  data_sce[i,2] = tmp2
+}
+data = rbind(data_obs, data_sce)
 
 # 무강수 시나리오
 #data_obs = subset(data,관측일 < '2020-10-01')
@@ -41,3 +51,5 @@ data$SPI2 = cal_spi(data$cum_60)
 a_hat = 0.5 / (log(mean(data$cum_90))- mean(log(data$cum_90 + 0.00001))); b_hat = mean(data$cum_90) / a_hat
 data$SPI3 = cal_spi(data$cum_90)
 
+head(data)
+tail(data)
